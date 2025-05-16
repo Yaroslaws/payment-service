@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: payment-service
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/mydb
+    username: postgres
+    password: password
+
+  flyway:
+    url: jdbc:postgresql://localhost:5432/mydb
+    user: postgres
+    password: password
+    locations: classpath:db/migration
