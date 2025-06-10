@@ -5,13 +5,12 @@ import com.example.payment_service.dto.SubscriberDto;
 import com.example.payment_service.dto.SubscriberPaymentsDto;
 import com.example.payment_service.dto.mapper.PaymentMapper;
 import com.example.payment_service.dto.mapper.SubscriberMapper;
+import com.example.payment_service.kafka.KafkaProducerService;
 import com.example.payment_service.repository.PaymentRepository;
 import com.example.payment_service.repository.SubscriberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-
-import java.util.Collections;
 
 
 @Service
@@ -22,6 +21,7 @@ public class PaymentsService {
     private final SubscriberRepository subscriberRepository;
     private final PaymentMapper paymentMapper;
     private final SubscriberMapper subscriberMapper;
+    private final KafkaProducerService kafkaProducerService;
 
     public Flux<SubscriberPaymentsDto> getPayments() {
         return subscriberRepository.findAll()
@@ -37,6 +37,7 @@ public class PaymentsService {
 
 
     public void createPayment(PaymentDto paymentDto) {
+        kafkaProducerService.send(paymentDto.toString());
         paymentRepository.save(paymentMapper.toEntity(paymentDto));
     }
 }
